@@ -182,7 +182,7 @@ def finder(driver):
 
 
 def load_third_categories():
-    path = '/data/1001-4982/1001-1741.txt'
+    path = '/home/mikhail/Projects/bert_ozon/data/1001-1741/1001-1741.txt'
 
     data = []
     with open(path, 'r') as file:
