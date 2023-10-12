@@ -2,11 +2,12 @@ import pandas as pd
 import random
 from src.model import BertForSTS
 from src.testing import predict_similarity
+from pathlib import Path
+root_dir = Path(__file__).parent.parent.parent.resolve()  # directory of source root
 
-
-path_info_clean = "/home/mikhail/Projects/bert_ozon/data/csv/info_clean.csv"
-path_info_with_sim = "/home/mikhail/Projects/bert_ozon/data/csv_with_similarity_score/info_with_sim.csv"
-path_info_with_sim_neg = "/home/mikhail/Projects/bert_ozon/data/csv_with_similarity_score/info_with_sim_neg.csv"
+path_info_clean = "bert_ozon/data/csv/info_clean.csv"
+path_info_with_sim = "bert_ozon/data/csv_with_similarity_score/info_with_sim.csv"
+path_info_with_sim_neg = "bert_ozon/data/csv_with_similarity_score/info_with_sim_neg.csv"
 
 
 def add_sim_score():

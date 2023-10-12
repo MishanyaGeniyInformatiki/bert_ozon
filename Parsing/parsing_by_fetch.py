@@ -1,6 +1,8 @@
 import requests
 from fake_useragent import UserAgent
 import json
+from pathlib import Path
+root_dir = Path(__file__).parent.parent.parent.resolve()  # directory of source root
 
 
 class FetchParser:
@@ -52,41 +54,46 @@ class FetchParser:
         return url, params
 
 
-def parsing_by_fetch(path_for_save_product_json_informatio):
-    buffer_path = "/home/mikhail/Projects/bert_ozon/Parsing/collecting_data/fetches_from_buffer/buffer.txt"
+def parsing_by_fetch(path_for_save_product_json_information):
+    buffer_path = Path(root_dir)
+    buffer_path /= Path('bert_ozon/Parsing/collecting_data/fetches_from_buffer/buffer_example.txt')
 
     parsed_fetches = FetchParser(buffer_path)
-    # print(parsed_fetches.find_string_idx_by_item(699))
-
+    # print(parsed_fetches.find_string_idx_by_item(2587))
+    # return 0
     products_info = {}
-    # overridden len method
     i = 0
-
+    # 2587 for buffer 766-1018
+    # overridden len method
     for p_fet in parsed_fetches:
         print(i)
-        i += 1
-        if i == 700:
+        if i == 20:
             break
+        i += 1
         url = p_fet[0]
         params = p_fet[1]
 
-        # отправляем запрос на сервер по имеющемуся fetch
-        try:
+        if params["method"] == 'GET':
+            print('GET')
+        else:
+            # отправляем запрос на сервер по имеющемуся fetch
             response = fetch(url, params)
-            assert response.status_code == 200
 
-            products = response.json()['items']
+            if response.status_code == 200:  # проверка на то что код возврата 200 (т.е. что все ок)
+                try:  # ловим ошибки несуществующего ключа
+                    products = response.json()['items']
+                    for product in products:
+                        key = str(product["variant_id"])
+                        product_info = {"name": product["name"],
+                                        "description": product["description"],
+                                        "categories": product["categories"]}
+                        products_info[key] = product_info
+                except KeyError:
+                    print('KeyError')
+            else:
+                print('status_code != 200')
 
-            for product in products:
-                key = str(product["variant_id"])
-                product_info = {"name": product["name"],
-                                "description": product["description"],
-                                "categories": product["categories"]}
-                products_info[key] = product_info
-        except KeyError:
-            print('blyat, kak je pohyu')
-
-    with open(path_for_save_product_json_informatio, 'w', encoding='utf8') as f:
+    with open(path_for_save_product_json_information, 'w', encoding='utf8') as f:
         json.dump(products_info, f, ensure_ascii=False, indent=4)
 
 
@@ -101,7 +108,8 @@ def fetch(url, params):
 
 
 if __name__ == '__main__':
-    path_for_save_product_json_information = ''
+    path_for_save_product_json_information = Path(root_dir)
+    path_for_save_product_json_information /= Path('bert_ozon/data/example/example.json')
     parsing_by_fetch(path_for_save_product_json_information)
 
     """fetch("https://seller.ozon.ru/api/item/search-attribute-model-data-by-names", {

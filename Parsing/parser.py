@@ -5,7 +5,8 @@ import time
 import random
 import pyautogui as pag
 import pyperclip
-
+from pathlib import Path
+root_dir = Path(__file__).parent.parent.parent.resolve()  # directory of source root
 
 # pag.FAILSAFE = False
 
@@ -91,11 +92,18 @@ def first_login(phone_number: str):
     assert code == '1'
     time.sleep(random.uniform(10, 12))
 
-    finder(driver=driver)
+    finder(driver=driver, num_scrolls=5)
 
     time.sleep(random.uniform(3.5, 7.5))
 
     driver.quit()
+
+
+def scroll(driver):
+    # Прокрутка вниз
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    # Пауза, пока загрузится страница.
+    time.sleep(random.uniform(0.4, 0.5))
 
 
 def copy_NodeJS_fetch_using_mouse():
@@ -144,12 +152,14 @@ def save_from_buffer():
     """
     сохраняет инфу из буфера
     """
-    file = open('/home/mikhail/Projects/bert_ozon/Parsing/collecting_data/fetches_from_buffer/buffer.txt', 'a')
+    path = Path(root_dir)
+    path /= Path('bert_ozon/Parsing/collecting_data/fetches_from_buffer/buffer_example.txt')
+    file = open(path, 'a')
     file.write(pyperclip.paste() + '\n')
     file.close()
 
 
-def finder(driver):
+def finder(driver, num_scrolls=10):
     """
     собирает информацию о продуктах из категории
     """
@@ -180,9 +190,28 @@ def finder(driver):
         search_line.clear()
         time.sleep(random.uniform(0.2, 0.3))
 
+        for i in range(num_scrolls):
+            # чистим предыдущие выводы
+            clear_logs()
+
+            # скролим 1 раз
+            scroll(driver=driver)
+
+            # копируем Node.js fetch о товаре в буфер
+            copy_NodeJS_fetch_using_mouse()
+
+            # сохраняем из буфера
+            save_from_buffer()
+
+            # чистим строку поиска
+            time.sleep(random.uniform(0.2, 0.3))
+            search_line.clear()
+            time.sleep(random.uniform(0.2, 0.3))
+
 
 def load_third_categories():
-    path = '/home/mikhail/Projects/bert_ozon/data/1001-1741/1001-1741.txt'
+    path = Path(root_dir)
+    path /= Path('bert_ozon/data/example/example.txt')
 
     data = []
     with open(path, 'r') as file:
@@ -194,5 +223,6 @@ def load_third_categories():
 if __name__ == '__main__':
     # phone_number = '917 544 50 19'
     phone_number = '925 358 88 64'
+    # phone_number = "925 128 59 48"
     first_login(phone_number)
 

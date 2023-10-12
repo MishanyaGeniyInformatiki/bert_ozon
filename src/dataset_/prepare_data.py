@@ -8,12 +8,12 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 
 
-path_info_csv = "/home/mikhail/Projects/bert_ozon/data/csv/info.csv"
-path_info_clean_csv = "/home/mikhail/Projects/bert_ozon/data/csv/info_clean.csv"
+path_info_csv = "bert_ozon/data/csv/info.csv"
+path_info_clean_csv = "bert_ozon/data/csv/info_clean.csv"
 
-path_1_233 = "/home/mikhail/Projects/bert_ozon/data/1-233/1-233.json"
-path_236_998 = "/home/mikhail/Projects/bert_ozon/data/236-998/236-998.json"
-path_1001_1741 = "/home/mikhail/Projects/bert_ozon/data/1001-1741/1001-1741.json"
+path_1_233 = "bert_ozon/data/1-233/1-233.json"
+path_236_998 = "bert_ozon/data/236-998/236-998.json"
+path_1001_1741 = "bert_ozon/data/1001-1741/1001-1741.json"
 
 paths = [path_1_233, path_236_998, path_1001_1741]
 
